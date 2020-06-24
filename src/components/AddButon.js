@@ -1,12 +1,12 @@
 import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { COLOR } from "../constants/Colors";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 30,
+    height: 40,
     width: 50,
     justifyContent: "center",
     backgroundColor: COLOR.LIGHT_RED,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function AddButton() {
+export default function AddButton({ onPress }) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity

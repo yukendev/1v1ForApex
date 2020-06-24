@@ -1,8 +1,8 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./HomeScreen";
-import My1v1Screen from "./My1v1Screen";
-import UserInfoScreen from "./UserInfoScreen";
+import HomeScreen from "../screens/HomeScreen";
+import My1v1Screen from "../screens/My1v1Screen";
+import UserInfoScreen from "../screens/UserInfoScreen";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import { COLOR } from "../constants/Colors";
 
@@ -12,17 +12,21 @@ export default function Route() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: () => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
+          let color;
 
           if (route.name === "Home") {
+            color = focused ? "#fff" : COLOR.LIGHT_RED;
             iconName = "list";
           } else if (route.name === "My1v1") {
+            color = focused ? "#fff" : COLOR.LIGHT_RED;
             iconName = "sticky-note";
           } else {
+            color = focused ? "#fff" : COLOR.LIGHT_RED;
             iconName = "user";
           }
-          return <Ionicons name={iconName} size={25} color={"#fff"} />;
+          return <Ionicons name={iconName} size={25} color={color} />;
         },
       })}
       tabBarOptions={{

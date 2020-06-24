@@ -3,4 +3,6 @@ export const COLOR = {
   DEEP_RED: "#D35656",
   LIGHT_RED: "#E98282",
   BACKGROUND: "#faebd7",
+  FORM_BACKGROUND: "#3C3D47",
+  YELLOW: "#FFCB74",
 };
