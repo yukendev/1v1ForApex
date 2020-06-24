@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLOR } from "../constants/Colors";
+import AddForm from "../components/AddForm";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
 export default function Add() {
   return (
     <View style={styles.container}>
-      <Text>Add</Text>
+      <AddForm />
     </View>
   );
 }

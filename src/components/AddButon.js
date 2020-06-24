@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function AddButton({ onPress }) {
+export default function AddButton() {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
