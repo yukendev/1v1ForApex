@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 import { COLOR } from "../constants/Colors";
-import Ionicons from "react-native-vector-icons/FontAwesome";
 
 const styles = StyleSheet.create({
   container: {
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function List({
+export default function MyList({
   id,
   platform,
   postedAt,
@@ -88,8 +87,6 @@ export default function List({
   playTime,
   comment,
 }) {
-  const [isOpened, setIsOpened] = useState(false);
-  let iconName = isOpened ? "caret-up" : "caret-down";
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
@@ -103,21 +100,9 @@ export default function List({
         <Text style={styles.playerSkill}>{playerSkill}</Text>
         <Text style={styles.playTime}>{playTime}</Text>
       </View>
-      {isOpened ? (
-        <View style={styles.commentContainer}>
-          <Text style={styles.comment}>{comment}</Text>
-        </View>
-      ) : null}
-
-      <TouchableOpacity
-        style={styles.openButton}
-        onPress={() => setIsOpened(!isOpened)}
-      >
-        <Ionicons name={iconName} size={30} color={"#fff"} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.entryContainer}>
-        <Text style={styles.entryText}>エントリーする！</Text>
-      </TouchableOpacity>
+      <View style={styles.commentContainer}>
+        <Text style={styles.comment}>{comment}</Text>
+      </View>
     </View>
   );
 }
