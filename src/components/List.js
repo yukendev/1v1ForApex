@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLOR } from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -88,6 +89,7 @@ export default function List({
   playTime,
   comment,
 }) {
+  const navigation = useNavigation();
   const [isOpened, setIsOpened] = useState(false);
   let iconName = isOpened ? "caret-up" : "caret-down";
   return (
@@ -115,7 +117,10 @@ export default function List({
       >
         <Ionicons name={iconName} size={30} color={"#fff"} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.entryContainer}>
+      <TouchableOpacity
+        style={styles.entryContainer}
+        onPress={() => navigation.navigate("My1v1")}
+      >
         <Text style={styles.entryText}>エントリーする！</Text>
       </TouchableOpacity>
     </View>

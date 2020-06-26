@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ScrollView,
 } from "react-native";
 import { COLOR } from "../constants/Colors";
 
@@ -44,14 +45,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     height: 40,
-    fontSize: 15,
+    fontSize: 20,
     marginBottom: 40,
   },
 });
 
 export default function Login({ navigation }) {
   return (
-    <View style={styles.container}>
+    <ScrollView scrollEnabled={true} contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
         <TextInput
           placeholder="email"
@@ -76,6 +77,6 @@ export default function Login({ navigation }) {
           onPress={() => navigation.navigate("Signup")}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }

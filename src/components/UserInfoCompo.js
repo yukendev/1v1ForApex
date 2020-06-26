@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLOR } from "../constants/Colors";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   infoContainer: {
@@ -38,24 +39,37 @@ const styles = StyleSheet.create({
 });
 
 export default function UserInfo({ id, platform }) {
+  const navigation = useNavigation();
   return (
     <View style={styles.infoContainer}>
       <View style={styles.idContainer}>
         <Text style={styles.id}>ID: {id}</Text>
-        <TouchableOpacity style={styles.editContainer}>
+        <TouchableOpacity
+          style={styles.editContainer}
+          onPress={() => navigation.navigate("Edit")}
+        >
           <Text style={styles.edit}>編集</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.platformContainer}>
         <Text style={styles.platform}>Platform: {platform}</Text>
-        <TouchableOpacity style={styles.editContainer}>
+        <TouchableOpacity
+          style={styles.editContainer}
+          onPress={() => navigation.navigate("Edit")}
+        >
           <Text style={styles.edit}>編集</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.logoutContainer}>
+      <TouchableOpacity
+        style={styles.logoutContainer}
+        onPress={() => navigation.navigate("Login")}
+      >
         <Text style={styles.logout}>ログアウト</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.helpContainer}>
+      <TouchableOpacity
+        style={styles.helpContainer}
+        onPress={() => navigation.navigate("Help")}
+      >
         <Text style={styles.help}>ヘルプ</Text>
       </TouchableOpacity>
     </View>
