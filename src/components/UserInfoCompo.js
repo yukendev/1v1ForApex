@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
 });
 
 export default function UserInfo({ id, platform }) {
-  const db = firebase.firestore();
   const navigation = useNavigation();
+  const db = firebase.firestore();
   const currentUser = firebase.auth().currentUser;
   return (
     <View style={styles.infoContainer}>

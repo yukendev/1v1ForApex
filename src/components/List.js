@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLOR } from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
+import "@firebase/firestore";
+import firebase from "firebase";
 
 const styles = StyleSheet.create({
   container: {
@@ -91,6 +93,8 @@ export default function List({
 }) {
   const navigation = useNavigation();
   const [isOpened, setIsOpened] = useState(false);
+  const db = firebase.firestore();
+  const currentUser = firebase.auth().currentUser;
   let iconName = isOpened ? "caret-up" : "caret-down";
   return (
     <View style={styles.container}>

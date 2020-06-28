@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { COLOR } from "../constants/Colors";
 import List from "../components/List";
 import { DATA } from "../dummies/ListData";
