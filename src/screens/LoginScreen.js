@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 import { COLOR } from "../constants/Colors";
+import firebase from "firebase";
+import "@firebase/firestore";
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +54,25 @@ const styles = StyleSheet.create({
 });
 
 export default function Login({ navigation }) {
+  const db = firebase.firestore();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const Login = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((user) =>
+        db
+          .collection("users")
+          .doc(user.user.uid)
+          .update({
+            onBoarding: true,
+          })
+          .then(() => navigation.navigate("Home"))
+          .catch((error) => console.log(error))
+      )
+      .catch((error) => console.log(error));
+  };
   return (
     <ScrollView scrollEnabled={true} contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
@@ -59,16 +80,18 @@ export default function Login({ navigation }) {
           placeholder="email"
           autoCapitalize="none"
           style={styles.textInput}
+          onChangeText={(text) => setEmail(text)}
         />
         <TextInput
           placeholder="password"
           autoCapitalize="none"
-          hf
+          secureTextEntry
           style={styles.textInput}
+          onChangeText={(text) => setPassword(text)}
         />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => Login(email, password)}
         >
           <Text style={styles.buttonText}>ログイン</Text>
         </TouchableOpacity>

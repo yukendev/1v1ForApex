@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { COLOR } from "../constants/Colors";
-import AddForm from "../components/AddForm";
+import EditForm from "../components/EditForm";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,10 +12,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Add() {
+export default function Edit() {
   return (
     <ScrollView scrollEnabled={true} contentContainerStyle={styles.container}>
-      <AddForm />
+      <EditForm
+        text="登録"
+        route="Home"
+        cansel="今は登録しない"
+        initial={true}
+      />
     </ScrollView>
   );
 }

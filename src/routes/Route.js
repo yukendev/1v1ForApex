@@ -6,7 +6,7 @@ import Add from "../screens/AddScreen";
 import AddButton from "../components/AddButon";
 import Help from "../screens/HelpScreen";
 import Edit from "../screens/EditScreen";
-
+import Entry from "../screens/InitialEntryScreen";
 import { COLOR } from "../constants/Colors";
 
 const Stack = createStackNavigator();
@@ -70,6 +70,19 @@ export default function Route() {
       <Stack.Screen
         name="Edit"
         component={Edit}
+        options={{
+          headerLeft: null,
+          title: "1v1 for APEX",
+          headerStyle: { backgroundColor: COLOR.DEEP_RED },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Entry"
+        component={Entry}
         options={{
           headerLeft: null,
           title: "1v1 for APEX",

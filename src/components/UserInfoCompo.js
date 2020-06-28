@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLOR } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import "@firebase/firestore";
+import firebase from "firebase";
 
 const styles = StyleSheet.create({
   infoContainer: {
@@ -39,7 +41,9 @@ const styles = StyleSheet.create({
 });
 
 export default function UserInfo({ id, platform }) {
+  const db = firebase.firestore();
   const navigation = useNavigation();
+  const currentUser = firebase.auth().currentUser;
   return (
     <View style={styles.infoContainer}>
       <View style={styles.idContainer}>
@@ -62,7 +66,17 @@ export default function UserInfo({ id, platform }) {
       </View>
       <TouchableOpacity
         style={styles.logoutContainer}
-        onPress={() => navigation.navigate("Login")}
+        onPress={() =>
+          firebase
+            .auth()
+            .signOut()
+            .then(
+              db.collection("users").doc(currentUser.uid).update({
+                onBoarding: false,
+              }),
+              navigation.navigate("Login")
+            )
+        }
       >
         <Text style={styles.logout}>ログアウト</Text>
       </TouchableOpacity>

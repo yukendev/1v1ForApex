@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { COLOR } from "../constants/Colors";
 import EditForm from "../components/EditForm";
 
@@ -15,8 +15,7 @@ const styles = StyleSheet.create({
 export default function Edit() {
   return (
     <ScrollView scrollEnabled={true} contentContainerStyle={styles.container}>
-      <Text>Edit</Text>
-      <EditForm />
+      <EditForm text="編集" route="Home" cansel="キャンセル" initial={false} />
     </ScrollView>
   );
 }

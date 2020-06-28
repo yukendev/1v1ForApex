@@ -5,10 +5,13 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { COLOR } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import RadioButton from "./RadioButton";
+import "@firebase/firestore";
+import firebase from "firebase";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +33,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 3,
   },
-  platformContainer: {},
   platformItem: { flexDirection: "row", marginVertical: 5 },
   buttonText: { color: "#fff", fontSize: 20, marginLeft: 10 },
   editContainer: {
@@ -48,13 +50,28 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function EditForm() {
+export default function EditForm({ text, route, cansel, initial }) {
+  const currentUser = firebase.auth().currentUser;
   const [platformChecked, setPlatformChecked] = useState("first");
+  const [id, setId] = useState("");
   const navigation = useNavigation();
+  const db = firebase.firestore();
+
+  const [defaultValue, setDefaultValue] = useState("");
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then((doc) => setDefaultValue(doc.data().apexId));
   return (
     <View style={styles.container}>
       <Text style={styles.text}>ID</Text>
-      <TextInput style={styles.textInput} />
+      <TextInput
+        style={styles.textInput}
+        onChangeText={(id) => setId(id)}
+        autoCapitalize="none"
+        defaultValue={defaultValue}
+      />
       <Text style={styles.text}>PlatForm</Text>
       <View style={styles.platformContainer}>
         <View style={styles.platformItem}>
@@ -72,14 +89,39 @@ export default function EditForm() {
           <Text style={styles.buttonText}>PS4</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.editContainer}>
-        <Text style={styles.editText}>編集</Text>
+      <TouchableOpacity
+        style={styles.editContainer}
+        onPress={() =>
+          db
+            .collection("users")
+            .doc(currentUser.uid)
+            .update({
+              apexId: id,
+              platform: platformChecked === "first" ? "PC" : "PS4",
+            })
+            .then(() => navigation.navigate("Home"))
+            .catch((error) => console.log(error))
+        }
+      >
+        <Text style={styles.editText}>{text}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.canselContainer}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() =>
+          initial
+            ? db
+                .collection("users")
+                .doc(currentUser.uid)
+                .update({
+                  apexId: "",
+                  platform: "",
+                })
+                .then(() => navigation.navigate(route))
+                .catch((error) => console.log(error))
+            : navigation.goBack()
+        }
       >
-        <Text style={styles.cansel}>キャンセル</Text>
+        <Text style={styles.cansel}>{cansel}</Text>
       </TouchableOpacity>
     </View>
   );

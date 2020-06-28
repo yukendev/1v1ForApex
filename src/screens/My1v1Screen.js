@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLOR.BACKGROUND,
   },
-  titleContainer: {},
   title: { fontSize: 30, marginBottom: 20 },
   id: {
     fontSize: 25,

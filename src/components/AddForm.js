@@ -10,6 +10,8 @@ import {
 import { COLOR } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import RadioButton from "./RadioButton";
+import "@firebase/firestore";
+import firebase from "firebase";
 
 const styles = StyleSheet.create({
   container: {
@@ -64,6 +66,48 @@ export default function AddForm() {
   const navigation = useNavigation();
   const [levelChecked, setLevelChecked] = useState("first");
   const [timeChecked, setTimeChecked] = useState("first");
+  const [comment, setComment] = useState("");
+  const db = firebase.firestore();
+  const currentUser = firebase.auth().currentUser;
+
+  let Level;
+  if (levelChecked == "first") {
+    Level = "誰でも";
+  } else if (levelChecked == "second") {
+    Level = "初心者同士で";
+  } else if (levelChecked == "third") {
+    Level = "上級者求む";
+  }
+
+  let Time;
+  if (timeChecked == "first") {
+    Time = "制限無し";
+  } else if (timeChecked == "second") {
+    Time = "1時間以内";
+  } else if (timeChecked == "third") {
+    Time = "2時間以内";
+  }
+
+  let ownerApexId;
+  let ownerPlatform;
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then(
+      (doc) => (
+        (ownerApexId = doc.data().apexId), (ownerPlatform = doc.data().platform)
+      )
+    )
+    .catch((error) => console.log(error));
+
+  const timeGetter = () => {
+    const now = new Date();
+    const Hour = ("00" + now.getHours()).slice(-2);
+    const Min = ("00" + now.getMinutes()).slice(-2);
+    const Time = `${Hour}:${Min}`;
+    return Time;
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Text style={styles.text}>プレイヤーレベル</Text>
@@ -123,17 +167,42 @@ export default function AddForm() {
         autoCapitalize="none"
         multiline={true}
         placeholder="コメント"
+        onChangeText={(text) => setComment(text)}
       />
 
       <TouchableOpacity
         style={styles.postContainer}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() =>
+          db
+            .collection("1v1s")
+            .add({
+              ownerPlayerId: currentUser.uid,
+              ownerApexId: ownerApexId,
+              platform: ownerPlatform,
+              playerLevel: Level,
+              playTime: Time,
+              createdAt: timeGetter(),
+              comment: comment,
+              isEntered: false,
+            })
+            .then((docRef) =>
+              db
+                .collection("users")
+                .doc(currentUser.uid)
+                .update({
+                  my1v1: docRef.id,
+                })
+                .then(() => navigation.navigate("Home"))
+                .catch((error) => console.log(error))
+            )
+            .catch((error) => console.log(error))
+        }
       >
         <Text style={styles.post}>投稿</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.canselContainer}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.goBack()}
       >
         <Text style={styles.cansel}>キャンセル</Text>
       </TouchableOpacity>
