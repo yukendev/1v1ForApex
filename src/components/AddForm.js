@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import RadioButton from "./RadioButton";
 import "@firebase/firestore";
 import firebase from "firebase";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const styles = StyleSheet.create({
   container: {
@@ -60,15 +61,53 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 5,
   },
+  timeContainer: {
+    flexDirection: "row",
+    width: "80%",
+  },
+  timeText: {
+    color: "#fff",
+    fontSize: 25,
+    textDecorationLine: "underline",
+    marginLeft: 20,
+    position: "absolute",
+    bottom: 10,
+  },
+  timeButtonContainer: {
+    backgroundColor: COLOR.YELLOW,
+    borderRadius: 3,
+    marginVertical: 7,
+  },
+  timeButtonText: { color: "#fff", fontSize: 25, padding: 3 },
+  plusContainer: {
+    backgroundColor: COLOR.YELLOW,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginLeft: 20,
+    position: "absolute",
+    bottom: 6,
+  },
+  plusText: {
+    color: "#fff",
+    fontSize: 30,
+    padding: 3,
+    position: "absolute",
+    bottom: -3,
+    left: 3.5,
+  },
 });
 
 export default function AddForm() {
   const navigation = useNavigation();
   const [levelChecked, setLevelChecked] = useState("first");
-  const [timeChecked, setTimeChecked] = useState("first");
   const [comment, setComment] = useState("");
   const db = firebase.firestore();
   const currentUser = firebase.auth().currentUser;
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [type, setType] = useState("");
 
   let Level;
   if (levelChecked == "first") {
@@ -77,15 +116,6 @@ export default function AddForm() {
     Level = "初心者同士で";
   } else if (levelChecked == "third") {
     Level = "上級者求む";
-  }
-
-  let Time;
-  if (timeChecked == "first") {
-    Time = "制限無し";
-  } else if (timeChecked == "second") {
-    Time = "1時間以内";
-  } else if (timeChecked == "third") {
-    Time = "2時間以内";
   }
 
   let ownerApexId;
@@ -106,6 +136,15 @@ export default function AddForm() {
     const Min = ("00" + now.getMinutes()).slice(-2);
     const Time = `${Hour}:${Min}`;
     return Time;
+  };
+
+  const handleSubmit = (date, type) => {
+    if (type == "start") {
+      setStartTime(date.toString().substr(16, 5));
+    } else if (type == "end") {
+      setEndTime(date.toString().substr(16, 5));
+    }
+    setIsDatePickerVisible(false);
   };
 
   return (
@@ -137,31 +176,55 @@ export default function AddForm() {
 
       <Text style={styles.text}>対戦時間</Text>
 
-      <View style={styles.radioContainer}>
-        <View style={styles.radioItemContainer}>
-          <RadioButton
-            onPress={() => setTimeChecked("first")}
-            checked={timeChecked === "first" ? true : false}
-          />
-          <Text style={styles.radioText}>制限無し</Text>
+      <View style={styles.timeContainer}>
+        <View style={styles.timeButtonContainer}>
+          <Text style={styles.timeButtonText}>開始時刻</Text>
         </View>
-
-        <View style={styles.radioItemContainer}>
-          <RadioButton
-            onPress={() => setTimeChecked("second")}
-            checked={timeChecked === "second" ? true : false}
-          />
-          <Text style={styles.radioText}>1時間以内</Text>
-        </View>
-
-        <View style={styles.radioItemContainer}>
-          <RadioButton
-            onPress={() => setTimeChecked("third")}
-            checked={timeChecked === "third" ? true : false}
-          />
-          <Text style={styles.radioText}>2時間以内</Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            setIsDatePickerVisible(true), setType("start");
+          }}
+        >
+          {startTime ? (
+            <Text style={styles.timeText}>{startTime}</Text>
+          ) : (
+            <View style={styles.plusContainer}>
+              <Text style={styles.plusText}>+</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
+
+      <View style={styles.timeContainer}>
+        <View style={styles.timeButtonContainer}>
+          <Text style={styles.timeButtonText}>終了時刻</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            setIsDatePickerVisible(true), setType("end");
+          }}
+        >
+          {endTime ? (
+            <Text style={styles.timeText}>{endTime}</Text>
+          ) : (
+            <View style={styles.plusContainer}>
+              <Text style={styles.plusText}>+</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="time"
+        locale="en_GB"
+        onConfirm={(date) => handleSubmit(date, type)}
+        onCancel={() => setIsDatePickerVisible(false)}
+        cancelTextIOS="キャンセル"
+        confirmTextIOS="決定"
+        headerTextIOS={type == "start" ? "開始時刻" : "終了時刻"}
+      />
+
       <TextInput
         style={styles.comment}
         autoCapitalize="none"
@@ -180,7 +243,8 @@ export default function AddForm() {
               ownerApexId: ownerApexId,
               platform: ownerPlatform,
               playerLevel: Level,
-              playTime: Time,
+              startTime: startTime,
+              endTime: endTime,
               createdAt: timeGetter(),
               comment: comment,
               isEntered: false,

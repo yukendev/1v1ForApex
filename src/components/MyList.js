@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   request: {
     flexDirection: "row",
-    width: "70%",
+    width: "85%",
     justifyContent: "space-around",
     marginVertical: 10,
   },

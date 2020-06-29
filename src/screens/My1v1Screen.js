@@ -35,7 +35,7 @@ export default function My1v1() {
         platform={"PC"}
         postedAt={"18:08"}
         playerSkill={"上級者求む"}
-        playTime={"2時間"}
+        playTime={"16:00~17:00"}
         comment={
           "lorem ipsum（ロレム・イプサム、略してリプサム lipsum ともいう）とは、出版、ウェブデザイン、グラフィックデザインなどの諸分野において使用されている典型的なダミーテキスト。"
         }
