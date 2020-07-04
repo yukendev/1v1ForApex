@@ -1,24 +1,24 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabRoute from "./TabRoute";
-import InitialRoute from "../routes/InitialRoute";
 import Add from "../screens/AddScreen";
 import AddButton from "../components/AddButon";
 import Help from "../screens/HelpScreen";
-import Edit from "../screens/EditScreen";
 import Entry from "../screens/InitialEntryScreen";
 import { COLOR } from "../constants/Colors";
+import InitialRoute from "./InitialRoute";
 
 const Stack = createStackNavigator();
 
 export default function Route() {
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
         name="Login"
         component={InitialRoute}
         options={{
           title: "1v1 for APEX",
+          headerLeft: null,
           headerStyle: { backgroundColor: COLOR.DEEP_RED },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -33,7 +33,6 @@ export default function Route() {
           headerRight: () => <AddButton />,
           headerLeft: null,
           title: "1v1 for APEX",
-
           headerStyle: { backgroundColor: COLOR.DEEP_RED },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -57,19 +56,6 @@ export default function Route() {
       <Stack.Screen
         name="Help"
         component={Help}
-        options={{
-          headerLeft: null,
-          title: "1v1 for APEX",
-          headerStyle: { backgroundColor: COLOR.DEEP_RED },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      />
-      <Stack.Screen
-        name="Edit"
-        component={Edit}
         options={{
           headerLeft: null,
           title: "1v1 for APEX",

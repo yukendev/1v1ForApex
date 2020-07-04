@@ -61,16 +61,7 @@ export default function Login({ navigation }) {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((user) =>
-        db
-          .collection("users")
-          .doc(user.user.uid)
-          .update({
-            onBoarding: true,
-          })
-          .then(() => navigation.navigate("Home"))
-          .catch((error) => console.log(error))
-      )
+      .then(() => navigation.navigate("Home"))
       .catch((error) => console.log(error));
   };
   return (
@@ -99,6 +90,11 @@ export default function Login({ navigation }) {
           title="新規登録"
           color="#fff"
           onPress={() => navigation.navigate("Signup")}
+        />
+        <Button
+          title="登録無しで始める"
+          color="#fff"
+          onPress={() => navigation.navigate("Home")}
         />
       </View>
     </ScrollView>

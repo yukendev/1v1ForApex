@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { COLOR } from "../constants/Colors";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import "@firebase/firestore";
 import firebase from "firebase";
+import IdMosaic from "../functions/IdMosaic";
 
 const styles = StyleSheet.create({
   container: {
@@ -15,6 +16,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginLeft: "auto",
     marginRight: "auto",
+  },
+  mineContainer: {
+    backgroundColor: COLOR.FORM_BACKGROUND,
+    width: "80%",
+    borderRadius: 5,
+    opacity: 0.8,
+    marginVertical: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+    borderWidth: 6,
+    borderColor: COLOR.DEEP_RED,
   },
   userInfo: {
     flexDirection: "row",
@@ -88,18 +100,43 @@ export default function List({
   platform,
   postedAt,
   playerSkill,
-  playTime,
+  startTime,
+  endTime,
   comment,
+  uid,
+  ownerApexId,
 }) {
   const navigation = useNavigation();
   const [isOpened, setIsOpened] = useState(false);
   const db = firebase.firestore();
   const currentUser = firebase.auth().currentUser;
   let iconName = isOpened ? "caret-up" : "caret-down";
+  let apexId = "";
+  const [isMine, setIsMine] = useState(false);
+
+  const createAlert = () => {
+    Alert.alert("My1v1は一つまでです", "", {
+      cancelable: false,
+    });
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      db.collection("users")
+        .doc(currentUser.uid)
+        .get()
+        .then((doc) => {
+          apexId = doc.data().apexId;
+          if (ownerApexId == apexId) {
+            setIsMine(true);
+          }
+        });
+    }
+  });
   return (
-    <View style={styles.container}>
+    <View style={isMine ? styles.mineContainer : styles.container}>
       <View style={styles.userInfo}>
-        <Text style={styles.userId}>{id}</Text>
+        <Text style={styles.userId}>{IdMosaic(id)}</Text>
         <View style={styles.platformContainer}>
           <Text style={styles.platform}>{platform}</Text>
         </View>
@@ -107,7 +144,9 @@ export default function List({
       </View>
       <View style={styles.request}>
         <Text style={styles.playerSkill}>{playerSkill}</Text>
-        <Text style={styles.playTime}>{playTime}</Text>
+        <Text style={styles.playTime}>
+          {startTime}~{endTime}
+        </Text>
       </View>
       {isOpened ? (
         <View style={styles.commentContainer}>
@@ -121,12 +160,72 @@ export default function List({
       >
         <Ionicons name={iconName} size={30} color={"#fff"} />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.entryContainer}
-        onPress={() => navigation.navigate("My1v1")}
-      >
-        <Text style={styles.entryText}>エントリーする！</Text>
-      </TouchableOpacity>
+      {isMine ? (
+        <View></View>
+      ) : (
+        <TouchableOpacity
+          style={styles.entryContainer}
+          onPress={() => {
+            if (currentUser) {
+              db.collection("users")
+                .doc(currentUser.uid)
+                .get()
+                .then((doc) => {
+                  if (doc.data().onBoarding == false) {
+                    navigation.navigate("Entry");
+                  } else {
+                    if (
+                      doc.data().isPlaying == true ||
+                      doc.data().isRecruiting == true
+                    ) {
+                      createAlert();
+                    } else {
+                      db.collection("users")
+                        .doc(currentUser.uid)
+                        .update({
+                          isPlaying: true,
+                          my1v1: uid,
+                        })
+                        .then(() => console.log("success"))
+                        .catch((error) => console.log(error));
+                      db.collection("1v1s")
+                        .doc(uid)
+                        .update({
+                          enteredPlayer: apexId,
+                          enteredPlayerId: currentUser.uid,
+                          isEntried: true,
+                        })
+                        .then(() => navigation.navigate("My1v1"))
+                        .catch((error) => console.log(error));
+                    }
+                  }
+                });
+            } else {
+              navigation.navigate("Login");
+            }
+          }}
+        >
+          <Text style={styles.entryText}>エントリーする！</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
+// db.collection("users")
+//   .doc(currentUser.uid)
+//   .update({
+//     isPlaying: true,
+//     my1v1: uid,
+//   })
+//   .then(() => console.log("success"))
+//   .catch((error) => console.log(error));
+// db.collection("1v1s")
+//   .doc(uid)
+//   .update({
+//     enteredPlayer: apexId,
+//     enteredPlayerId: currentUser.uid,
+//     isEntried: true,
+//   })
+//   .then(() => navigation.navigate("My1v1"))
+//   .catch((error) => console.log(error));

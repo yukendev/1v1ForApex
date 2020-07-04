@@ -84,7 +84,8 @@ export default function MyList({
   platform,
   postedAt,
   playerSkill,
-  playTime,
+  startTime,
+  endTime,
   comment,
 }) {
   return (
@@ -98,7 +99,9 @@ export default function MyList({
       </View>
       <View style={styles.request}>
         <Text style={styles.playerSkill}>{playerSkill}</Text>
-        <Text style={styles.playTime}>{playTime}</Text>
+        <Text style={styles.playTime}>
+          {startTime}~{endTime}
+        </Text>
       </View>
       <View style={styles.commentContainer}>
         <Text style={styles.comment}>{comment}</Text>

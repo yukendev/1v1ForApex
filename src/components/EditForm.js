@@ -5,7 +5,8 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  Platform,
+  Button,
+  Alert,
 } from "react-native";
 import { COLOR } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
@@ -52,12 +53,18 @@ const styles = StyleSheet.create({
 
 export default function EditForm({ text, route, cansel, initial }) {
   const currentUser = firebase.auth().currentUser;
-  const [platformChecked, setPlatformChecked] = useState("first");
+  const [platformChecked, setPlatformChecked] = useState("");
   const [id, setId] = useState("");
   const navigation = useNavigation();
   const db = firebase.firestore();
 
   const [defaultValue, setDefaultValue] = useState("");
+
+  const createAlert = () => {
+    Alert.alert("全て入力してください", "", {
+      cancelable: false,
+    });
+  };
 
   db.collection("users")
     .doc(currentUser.uid)
@@ -91,20 +98,25 @@ export default function EditForm({ text, route, cansel, initial }) {
       </View>
       <TouchableOpacity
         style={styles.editContainer}
-        onPress={() =>
-          db
-            .collection("users")
-            .doc(currentUser.uid)
-            .update({
-              apexId: id,
-              platform: platformChecked === "first" ? "PC" : "PS4",
-            })
-            .then(() => navigation.navigate("Home"))
-            .catch((error) => console.log(error))
-        }
+        onPress={() => {
+          if (id == "" || platformChecked == "") {
+            createAlert();
+          } else {
+            db.collection("users")
+              .doc(currentUser.uid)
+              .update({
+                apexId: id,
+                platform: platformChecked === "first" ? "PC" : "PS4",
+                onBoarding: true,
+              })
+              .then(() => navigation.navigate("Home"))
+              .catch((error) => console.log(error));
+          }
+        }}
       >
         <Text style={styles.editText}>{text}</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.canselContainer}
         onPress={() =>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { COLOR } from "../constants/Colors";
 import UserInfoCompo from "../components/UserInfoCompo";
@@ -6,8 +6,6 @@ import UserInfoCompo from "../components/UserInfoCompo";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: COLOR.BACKGROUND,
   },
 });
@@ -15,7 +13,7 @@ const styles = StyleSheet.create({
 export default function UserInfo() {
   return (
     <View style={styles.container}>
-      <UserInfoCompo id="uiahh4ih245" platform="PC" />
+      <UserInfoCompo />
     </View>
   );
 }

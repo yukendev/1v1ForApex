@@ -109,13 +109,13 @@ export default function AddForm() {
   const [endTime, setEndTime] = useState("");
   const [type, setType] = useState("");
 
-  let Level;
+  let level;
   if (levelChecked == "first") {
-    Level = "誰でも";
+    level = "誰でも";
   } else if (levelChecked == "second") {
-    Level = "初心者同士で";
+    level = "初心者同士で";
   } else if (levelChecked == "third") {
-    Level = "上級者求む";
+    level = "上級者求む";
   }
 
   let ownerApexId;
@@ -242,23 +242,26 @@ export default function AddForm() {
               ownerPlayerId: currentUser.uid,
               ownerApexId: ownerApexId,
               platform: ownerPlatform,
-              playerLevel: Level,
+              playerLevel: level,
               startTime: startTime,
               endTime: endTime,
               createdAt: timeGetter(),
               comment: comment,
-              isEntered: false,
+              isEnteried: false,
             })
-            .then((docRef) =>
-              db
-                .collection("users")
+            .then((docRef) => {
+              db.collection("users")
                 .doc(currentUser.uid)
                 .update({
+                  isRecruiting: true,
                   my1v1: docRef.id,
                 })
                 .then(() => navigation.navigate("Home"))
-                .catch((error) => console.log(error))
-            )
+                .catch((error) => console.log(error));
+              db.collection("1v1s").doc(docRef.id).update({
+                key: docRef.id,
+              });
+            })
             .catch((error) => console.log(error))
         }
       >
